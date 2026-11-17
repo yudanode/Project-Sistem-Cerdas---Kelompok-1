@@ -35,41 +35,18 @@ graph = {
 }
 print("Data lokasi dan graph berhasil dimuat.")
 
-# FUNGSI HEURISTIK HAVERSINE
-import math
+# FUNGSI HEURISTIK 
 
 def heuristik(node_awal, node_tujuan):
-    lat1, lon1 = koordinat[node_awal]
-    lat2, lon2 = koordinat[node_tujuan]
+    x1, y1 = koordinat[node_awal]
+    x2, y2 = koordinat[node_tujuan]
 
-    # Konversi derajat ke radian
-    lat1 = math.radians(lat1)
-    lon1 = math.radians(lon1)
-    lat2 = math.radians(lat2)
-    lon2 = math.radians(lon2)
+    nilai = (x1 - x2) + (y1 - y2)
 
-    #selisih koordinat
-    dlat = lat2 - lat1
-    dlon = lon2 - lon1
+    return nilai
 
-    #rumus haversine
-    a=(
-        math.sin(dlat/2)**2 
-        + math.cos(lat1)
-        *math.cos(lat2)
-        *math.sin(dlon/2)**2
-    )
-    c= 2 * math.asin(math.sqrt(a))
-
-    #radius bumi dalam kilometer
-    radius_bumi = 6371
-    jarak = radius_bumi * c
-
-    # Faktor penyesuaian untuk menjaga
-    # heuristik tidak melebihi biaya graph
-    return 0.95 * jarak
-
-# Pengujian fungsi heuristik
-hasil=heuristik("A", "G")
-print("Jarak heuristik A ke G:",
-      round(hasil, 3), "km")
+print("Pengujian Nilai Heuristik")
+print("A ke B:", heuristik("A", "B"))
+print("A ke C:", heuristik("A", "C"))
+print("A ke E:", heuristik("A", "E"))
+print("E ke G:", heuristik("E", "G"))
