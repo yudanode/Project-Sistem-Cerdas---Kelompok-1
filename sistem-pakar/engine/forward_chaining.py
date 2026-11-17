@@ -10,7 +10,6 @@ from data.rules import RULES
 def forward_chaining(gejala_dipilih):
     """
     Mencocokkan gejala yang dipilih pengguna dengan aturan penyakit.
-
     Menghasilkan daftar kandidat penyakit berdasarkan jumlah
     gejala yang cocok dengan setiap aturan.
     """
