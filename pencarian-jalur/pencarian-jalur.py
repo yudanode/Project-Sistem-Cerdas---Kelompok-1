@@ -40,13 +40,78 @@ print("Data lokasi dan graph berhasil dimuat.")
 def heuristik(node_awal, node_tujuan):
     x1, y1 = koordinat[node_awal]
     x2, y2 = koordinat[node_tujuan]
-
-    nilai = (x1 - x2) + (y1 - y2)
-
+    nilai = (x2 - x1) + (y2 - y1)
     return nilai
 
-print("Pengujian Nilai Heuristik")
-print("A ke B:", heuristik("A", "B"))
-print("A ke C:", heuristik("A", "C"))
-print("A ke E:", heuristik("A", "E"))
-print("E ke G:", heuristik("E", "G"))
+# FUNGSI A* SEARCH
+
+def astar(start, goal):
+    # Inisialisasi daftar OPEN dan CLOSED
+    open_list = [start]
+    closed_list = []
+
+    # Inisialisasi nilai g dan f
+    g_score = {node: float("inf") for node in graph}
+    g_score[start] = 0
+
+    f_score = {node: float("inf") for node in graph}
+    f_score[start] = heuristik(start, goal)
+
+    # Menyimpan node sebelumnya
+    came_from = {}
+
+    while open_list:
+        # Memilih node dengan nilai f terkecil
+        current = min(open_list, key=lambda node: f_score[node])
+
+        # Memeriksa apakah tujuan sudah ditemukan
+        if current == goal:
+            path = [current]
+
+            while current in came_from:
+                current = came_from[current]
+                path.append(current)
+
+            path.reverse()
+            return path, g_score[goal]
+
+        open_list.remove(current)
+        closed_list.append(current)
+
+        # Memeriksa semua tetangga
+        for neighbor, distance in graph[current].items():
+
+            if neighbor in closed_list:
+                continue
+
+            # Menghitung jarak aktual
+            tentative_g = g_score[current] + distance
+
+            if tentative_g < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g
+
+                # Menghitung f(n) = g(n) + h(n)
+                f_score[neighbor] = (
+                    tentative_g + heuristik(neighbor, goal)
+                )
+
+                if neighbor not in open_list:
+                    open_list.append(neighbor)
+
+    return None, float("inf")
+
+
+print("\nPengujian Algoritma A*")
+
+rute, jarak = astar("A", "G")
+
+if rute:
+    print("Rute yang ditemukan:")
+
+    for node in rute:
+        print(f"{node} - {nama_sekolah[node]}")
+
+    print(f"Total jarak: {jarak} km")
+else:
+    print("Rute tidak ditemukan.")
