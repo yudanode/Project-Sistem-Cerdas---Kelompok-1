@@ -1,5 +1,7 @@
 # Pencarian Jalur
-
+import networkx as nx
+import matplotlib.pyplot as plt
+import folium
 # DATA KOORDINAT SETIAP NODE
 koordinat={
     "A": (-6.32631417, 107.0156000),
@@ -102,16 +104,160 @@ def astar(start, goal):
     return None, float("inf")
 
 
-print("\nPengujian Algoritma A*")
+# Visualisasi Graph
+def visualisasi_graph(rute):
 
-rute, jarak = astar("A", "G")
+    G = nx.Graph()
 
-if rute:
-    print("Rute yang ditemukan:")
+    # Memasukkan hubungan antar-node
+    for node, tetangga in graph.items():
+        for neighbor, jarak in tetangga.items():
+            G.add_edge(node, neighbor, weight=jarak)
 
-    for node in rute:
-        print(f"{node} - {nama_sekolah[node]}")
+    # Posisi node
+    posisi = nx.spring_layout(G, seed=42)
 
-    print(f"Total jarak: {jarak} km")
+    # Membedakan jalur hasil A*
+    jalur_edges = list(zip(rute, rute[1:]))
+
+    # Menggambar node
+    nx.draw_networkx_nodes(
+        G, posisi,
+        node_color="lightblue",
+        node_size=1500
+    )
+
+    # Menggambar seluruh hubungan
+    nx.draw_networkx_edges(
+        G, posisi,
+        edge_color="gray",
+        width=1.5
+    )
+
+    # Menggambar jalur hasil A*
+    nx.draw_networkx_edges(
+        G, posisi,
+        edgelist=jalur_edges,
+        edge_color="red",
+        width=3
+    )
+
+    # Label node
+    nx.draw_networkx_labels(
+        G, posisi,
+        font_size=12,
+        font_weight="bold"
+    )
+
+    # Label jarak
+    label_jarak = nx.get_edge_attributes(G, "weight")
+
+    nx.draw_networkx_edge_labels(
+        G, posisi,
+        edge_labels=label_jarak,
+        font_size=9
+    )
+
+    plt.title("Visualisasi Pencarian Rute A*")
+    plt.axis("off")
+    plt.show()
+
+# VISUALISASI PETA GEOGRAFIS
+def visualisasi_peta(rute):
+
+    peta = folium.Map(
+    location=koordinat[rute[0]],
+    zoom_start=14,
+    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    attr="Tiles © Esri"
+)
+
+    # Menampilkan semua lokasi sekolah
+    for kode, lokasi in koordinat.items():
+
+        folium.Marker(
+            location=lokasi,
+            popup=f"{kode} - {nama_sekolah[kode]}",
+            tooltip=nama_sekolah[kode]
+        ).add_to(peta)
+
+    # Mengambil koordinat berdasarkan rute A*
+    koordinat_rute = [
+        koordinat[node] for node in rute
+    ]
+
+    # Menggambar jalur hasil A*
+    folium.PolyLine(
+        locations=koordinat_rute,
+        color="red",
+        weight=5,
+        opacity=0.8,
+        tooltip="Rute hasil algoritma A*"
+    ).add_to(peta)
+
+    # Menyesuaikan tampilan agar semua sekolah terlihat
+    peta.fit_bounds(list(koordinat.values()))
+
+    # Menyimpan peta
+    peta.save("peta_rute.html")
+
+    print("\nPeta berhasil disimpan sebagai peta_rute.html")
+
+# PROGRAM UTAMA
+
+def tampilkan_sekolah():
+    print("\n=== DAFTAR SEKOLAH ===")
+    for kode, nama in nama_sekolah.items():
+        print(f"{kode}. {nama}")
+
+
+def pilih_sekolah(keterangan):
+    while True:
+        kode = input(
+            f"Masukkan kode sekolah {keterangan}: "
+        ).upper()
+
+        if kode in nama_sekolah:
+            return kode
+
+        print("Kode sekolah tidak ditemukan. Silakan coba lagi.")
+
+
+print("\n================================")
+print(" SISTEM PENCARIAN RUTE SEKOLAH")
+print("       ALGORITMA A*")
+print("================================")
+
+tampilkan_sekolah()
+
+start = pilih_sekolah("asal")
+goal = pilih_sekolah("tujuan")
+
+if start == goal:
+    print("\nLokasi asal dan tujuan tidak boleh sama.")
+
 else:
-    print("Rute tidak ditemukan.")
+    rute, jarak = astar(start, goal)
+
+    print("\n========== HASIL PENCARIAN ==========")
+
+    if rute:
+        print("Lokasi awal  :", nama_sekolah[start])
+        print("Lokasi tujuan:", nama_sekolah[goal])
+
+        print("\nUrutan rute perjalanan:")
+
+        for i, node in enumerate(rute, start=1):
+            print(f"{i}. {node} - {nama_sekolah[node]}")
+
+        print(f"\nTotal jarak: {jarak:.2f} km")
+
+        # MENAMPILKAN VISUALISASI GRAPH
+        visualisasi_graph(rute)
+
+        # Membuat visualisasi peta geografis
+        visualisasi_peta(rute)
+
+    else:
+        print("Rute tidak ditemukan.")
+
