@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_584b95e0e929b40034c4a241b7ca3c27 {
+                    position: relative;
+                    width: 100.0vw;
+                    height: 100.0vh;
+
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>/*
+ * Glyphicons Halflings -- the icon font used by folium's default Awesome Markers
+ * (Icon(prefix="glyphicon")). Extracted from Bootstrap 3's glyphicon rules only.
+ *
+ * folium previously loaded netdna's bootstrap-glyphicons.css, which despite its
+ * name ships a full Bootstrap-3 base stylesheet (normalize reset + global `body`
+ * rules) that leaked onto the host page (GH-1820). This file provides just the
+ * @font-face and .glyphicon/.glyphicon-* rules needed for the markers, with no
+ * page-wide side effects. Font files are served from jsDelivr.
+ */
+@font-face{font-family:'Glyphicons Halflings';src:url('https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/fonts/glyphicons-halflings-regular.eot');src:url('https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),url('https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/fonts/glyphicons-halflings-regular.woff') format('woff'),url('https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/fonts/glyphicons-halflings-regular.ttf') format('truetype'),url('https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');}.glyphicon{position:relative;top:1px;display:inline-block;font-family:'Glyphicons Halflings';font-style:normal;font-weight:normal;line-height:1;-webkit-font-smoothing:antialiased;}
+.glyphicon-asterisk:before{content:"\2a";}
+.glyphicon-plus:before{content:"\2b";}
+.glyphicon-euro:before{content:"\20ac";}
+.glyphicon-minus:before{content:"\2212";}
+.glyphicon-cloud:before{content:"\2601";}
+.glyphicon-envelope:before{content:"\2709";}
+.glyphicon-pencil:before{content:"\270f";}
+.glyphicon-glass:before{content:"\e001";}
+.glyphicon-music:before{content:"\e002";}
+.glyphicon-search:before{content:"\e003";}
+.glyphicon-heart:before{content:"\e005";}
+.glyphicon-star:before{content:"\e006";}
+.glyphicon-star-empty:before{content:"\e007";}
+.glyphicon-user:before{content:"\e008";}
+.glyphicon-film:before{content:"\e009";}
+.glyphicon-th-large:before{content:"\e010";}
+.glyphicon-th:before{content:"\e011";}
+.glyphicon-th-list:before{content:"\e012";}
+.glyphicon-ok:before{content:"\e013";}
+.glyphicon-remove:before{content:"\e014";}
+.glyphicon-zoom-in:before{content:"\e015";}
+.glyphicon-zoom-out:before{content:"\e016";}
+.glyphicon-off:before{content:"\e017";}
+.glyphicon-signal:before{content:"\e018";}
+.glyphicon-cog:before{content:"\e019";}
+.glyphicon-trash:before{content:"\e020";}
+.glyphicon-home:before{content:"\e021";}
+.glyphicon-file:before{content:"\e022";}
+.glyphicon-time:before{content:"\e023";}
+.glyphicon-road:before{content:"\e024";}
+.glyphicon-download-alt:before{content:"\e025";}
+.glyphicon-download:before{content:"\e026";}
+.glyphicon-upload:before{content:"\e027";}
+.glyphicon-inbox:before{content:"\e028";}
+.glyphicon-play-circle:before{content:"\e029";}
+.glyphicon-repeat:before{content:"\e030";}
+.glyphicon-refresh:before{content:"\e031";}
+.glyphicon-list-alt:before{content:"\e032";}
+.glyphicon-flag:before{content:"\e034";}
+.glyphicon-headphones:before{content:"\e035";}
+.glyphicon-volume-off:before{content:"\e036";}
+.glyphicon-volume-down:before{content:"\e037";}
+.glyphicon-volume-up:before{content:"\e038";}
+.glyphicon-qrcode:before{content:"\e039";}
+.glyphicon-barcode:before{content:"\e040";}
+.glyphicon-tag:before{content:"\e041";}
+.glyphicon-tags:before{content:"\e042";}
+.glyphicon-book:before{content:"\e043";}
+.glyphicon-print:before{content:"\e045";}
+.glyphicon-font:before{content:"\e047";}
+.glyphicon-bold:before{content:"\e048";}
+.glyphicon-italic:before{content:"\e049";}
+.glyphicon-text-height:before{content:"\e050";}
+.glyphicon-text-width:before{content:"\e051";}
+.glyphicon-align-left:before{content:"\e052";}
+.glyphicon-align-center:before{content:"\e053";}
+.glyphicon-align-right:before{content:"\e054";}
+.glyphicon-align-justify:before{content:"\e055";}
+.glyphicon-list:before{content:"\e056";}
+.glyphicon-indent-left:before{content:"\e057";}
+.glyphicon-indent-right:before{content:"\e058";}
+.glyphicon-facetime-video:before{content:"\e059";}
+.glyphicon-picture:before{content:"\e060";}
+.glyphicon-map-marker:before{content:"\e062";}
+.glyphicon-adjust:before{content:"\e063";}
+.glyphicon-tint:before{content:"\e064";}
+.glyphicon-edit:before{content:"\e065";}
+.glyphicon-share:before{content:"\e066";}
+.glyphicon-check:before{content:"\e067";}
+.glyphicon-move:before{content:"\e068";}
+.glyphicon-step-backward:before{content:"\e069";}
+.glyphicon-fast-backward:before{content:"\e070";}
+.glyphicon-backward:before{content:"\e071";}
+.glyphicon-play:before{content:"\e072";}
+.glyphicon-pause:before{content:"\e073";}
+.glyphicon-stop:before{content:"\e074";}
+.glyphicon-forward:before{content:"\e075";}
+.glyphicon-fast-forward:before{content:"\e076";}
+.glyphicon-step-forward:before{content:"\e077";}
+.glyphicon-eject:before{content:"\e078";}
+.glyphicon-chevron-left:before{content:"\e079";}
+.glyphicon-chevron-right:before{content:"\e080";}
+.glyphicon-plus-sign:before{content:"\e081";}
+.glyphicon-minus-sign:before{content:"\e082";}
+.glyphicon-remove-sign:before{content:"\e083";}
+.glyphicon-ok-sign:before{content:"\e084";}
+.glyphicon-question-sign:before{content:"\e085";}
+.glyphicon-info-sign:before{content:"\e086";}
+.glyphicon-screenshot:before{content:"\e087";}
+.glyphicon-remove-circle:before{content:"\e088";}
+.glyphicon-ok-circle:before{content:"\e089";}
+.glyphicon-ban-circle:before{content:"\e090";}
+.glyphicon-arrow-left:before{content:"\e091";}
+.glyphicon-arrow-right:before{content:"\e092";}
+.glyphicon-arrow-up:before{content:"\e093";}
+.glyphicon-arrow-down:before{content:"\e094";}
+.glyphicon-share-alt:before{content:"\e095";}
+.glyphicon-resize-full:before{content:"\e096";}
+.glyphicon-resize-small:before{content:"\e097";}
+.glyphicon-exclamation-sign:before{content:"\e101";}
+.glyphicon-gift:before{content:"\e102";}
+.glyphicon-leaf:before{content:"\e103";}
+.glyphicon-eye-open:before{content:"\e105";}
+.glyphicon-eye-close:before{content:"\e106";}
+.glyphicon-warning-sign:before{content:"\e107";}
+.glyphicon-plane:before{content:"\e108";}
+.glyphicon-random:before{content:"\e110";}
+.glyphicon-comment:before{content:"\e111";}
+.glyphicon-magnet:before{content:"\e112";}
+.glyphicon-chevron-up:before{content:"\e113";}
+.glyphicon-chevron-down:before{content:"\e114";}
+.glyphicon-retweet:before{content:"\e115";}
+.glyphicon-shopping-cart:before{content:"\e116";}
+.glyphicon-folder-close:before{content:"\e117";}
+.glyphicon-folder-open:before{content:"\e118";}
+.glyphicon-resize-vertical:before{content:"\e119";}
+.glyphicon-resize-horizontal:before{content:"\e120";}
+.glyphicon-hdd:before{content:"\e121";}
+.glyphicon-bullhorn:before{content:"\e122";}
+.glyphicon-certificate:before{content:"\e124";}
+.glyphicon-thumbs-up:before{content:"\e125";}
+.glyphicon-thumbs-down:before{content:"\e126";}
+.glyphicon-hand-right:before{content:"\e127";}
+.glyphicon-hand-left:before{content:"\e128";}
+.glyphicon-hand-up:before{content:"\e129";}
+.glyphicon-hand-down:before{content:"\e130";}
+.glyphicon-circle-arrow-right:before{content:"\e131";}
+.glyphicon-circle-arrow-left:before{content:"\e132";}
+.glyphicon-circle-arrow-up:before{content:"\e133";}
+.glyphicon-circle-arrow-down:before{content:"\e134";}
+.glyphicon-globe:before{content:"\e135";}
+.glyphicon-tasks:before{content:"\e137";}
+.glyphicon-filter:before{content:"\e138";}
+.glyphicon-fullscreen:before{content:"\e140";}
+.glyphicon-dashboard:before{content:"\e141";}
+.glyphicon-heart-empty:before{content:"\e143";}
+.glyphicon-link:before{content:"\e144";}
+.glyphicon-phone:before{content:"\e145";}
+.glyphicon-usd:before{content:"\e148";}
+.glyphicon-gbp:before{content:"\e149";}
+.glyphicon-sort:before{content:"\e150";}
+.glyphicon-sort-by-alphabet:before{content:"\e151";}
+.glyphicon-sort-by-alphabet-alt:before{content:"\e152";}
+.glyphicon-sort-by-order:before{content:"\e153";}
+.glyphicon-sort-by-order-alt:before{content:"\e154";}
+.glyphicon-sort-by-attributes:before{content:"\e155";}
+.glyphicon-sort-by-attributes-alt:before{content:"\e156";}
+.glyphicon-unchecked:before{content:"\e157";}
+.glyphicon-expand:before{content:"\e158";}
+.glyphicon-collapse-down:before{content:"\e159";}
+.glyphicon-collapse-up:before{content:"\e160";}
+.glyphicon-log-in:before{content:"\e161";}
+.glyphicon-flash:before{content:"\e162";}
+.glyphicon-log-out:before{content:"\e163";}
+.glyphicon-new-window:before{content:"\e164";}
+.glyphicon-record:before{content:"\e165";}
+.glyphicon-save:before{content:"\e166";}
+.glyphicon-open:before{content:"\e167";}
+.glyphicon-saved:before{content:"\e168";}
+.glyphicon-import:before{content:"\e169";}
+.glyphicon-export:before{content:"\e170";}
+.glyphicon-send:before{content:"\e171";}
+.glyphicon-floppy-disk:before{content:"\e172";}
+.glyphicon-floppy-saved:before{content:"\e173";}
+.glyphicon-floppy-remove:before{content:"\e174";}
+.glyphicon-floppy-save:before{content:"\e175";}
+.glyphicon-floppy-open:before{content:"\e176";}
+.glyphicon-credit-card:before{content:"\e177";}
+.glyphicon-transfer:before{content:"\e178";}
+.glyphicon-cutlery:before{content:"\e179";}
+.glyphicon-header:before{content:"\e180";}
+.glyphicon-compressed:before{content:"\e181";}
+.glyphicon-earphone:before{content:"\e182";}
+.glyphicon-phone-alt:before{content:"\e183";}
+.glyphicon-tower:before{content:"\e184";}
+.glyphicon-stats:before{content:"\e185";}
+.glyphicon-sd-video:before{content:"\e186";}
+.glyphicon-hd-video:before{content:"\e187";}
+.glyphicon-subtitles:before{content:"\e188";}
+.glyphicon-sound-stereo:before{content:"\e189";}
+.glyphicon-sound-dolby:before{content:"\e190";}
+.glyphicon-sound-5-1:before{content:"\e191";}
+.glyphicon-sound-6-1:before{content:"\e192";}
+.glyphicon-sound-7-1:before{content:"\e193";}
+.glyphicon-copyright-mark:before{content:"\e194";}
+.glyphicon-registration-mark:before{content:"\e195";}
+.glyphicon-cloud-download:before{content:"\e197";}
+.glyphicon-cloud-upload:before{content:"\e198";}
+.glyphicon-tree-conifer:before{content:"\e199";}
+.glyphicon-tree-deciduous:before{content:"\e200";}
+.glyphicon-briefcase:before{content:"\1f4bc";}
+.glyphicon-calendar:before{content:"\1f4c5";}
+.glyphicon-pushpin:before{content:"\1f4cc";}
+.glyphicon-paperclip:before{content:"\1f4ce";}
+.glyphicon-camera:before{content:"\1f4f7";}
+.glyphicon-lock:before{content:"\1f512";}
+.glyphicon-bell:before{content:"\1f514";}
+.glyphicon-bookmark:before{content:"\1f516";}
+.glyphicon-fire:before{content:"\1f525";}
+.glyphicon-wrench:before{content:"\1f527";}
+</style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_584b95e0e929b40034c4a241b7ca3c27" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_584b95e0e929b40034c4a241b7ca3c27 = L.map(
+                "map_584b95e0e929b40034c4a241b7ca3c27",
+                {
+                    center: [-6.32631417, 107.0156],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 15,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_c1c65b61ff8aa07fbefc4483c5f9024d = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "Tiles \u00a9 Esri",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_c1c65b61ff8aa07fbefc4483c5f9024d.addTo(map_584b95e0e929b40034c4a241b7ca3c27);
+        
+    
+            var marker_c2d9d41d8771168cd594b6c9a391bae6 = L.marker(
+                [-6.32631417, 107.0156],
+                {
+}
+            ).addTo(map_584b95e0e929b40034c4a241b7ca3c27);
+        
+    
+        var popup_40558c67c64c32b5de90c0b42d19b883 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_6b3c081707b31a9d8faa357db5b697ae = $(`<div id="html_6b3c081707b31a9d8faa357db5b697ae" style="width: 100.0%; height: 100.0%;">A - SDN Cimuning 5</div>`)[0];
+                popup_40558c67c64c32b5de90c0b42d19b883.setContent(html_6b3c081707b31a9d8faa357db5b697ae);
+            
+        
+
+        marker_c2d9d41d8771168cd594b6c9a391bae6.bindPopup(popup_40558c67c64c32b5de90c0b42d19b883)
+        ;
+
+        
+    
+    
+            marker_c2d9d41d8771168cd594b6c9a391bae6.bindTooltip(
+                `<div>
+                     SDN Cimuning 5
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_3525982642bdcc04e58c906329b6aa87 = L.marker(
+                [-6.31682806, 107.0084318],
+                {
+}
+            ).addTo(map_584b95e0e929b40034c4a241b7ca3c27);
+        
+    
+        var popup_6bf7ae1c4f74909c23d7cfff8c6a53fe = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_847b02c186ae56e459a3dfec79d467c5 = $(`<div id="html_847b02c186ae56e459a3dfec79d467c5" style="width: 100.0%; height: 100.0%;">B - SMPN 10 Kota Bekasi</div>`)[0];
+                popup_6bf7ae1c4f74909c23d7cfff8c6a53fe.setContent(html_847b02c186ae56e459a3dfec79d467c5);
+            
+        
+
+        marker_3525982642bdcc04e58c906329b6aa87.bindPopup(popup_6bf7ae1c4f74909c23d7cfff8c6a53fe)
+        ;
+
+        
+    
+    
+            marker_3525982642bdcc04e58c906329b6aa87.bindTooltip(
+                `<div>
+                     SMPN 10 Kota Bekasi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_85c446d6374ae08c58c4092490091bba = L.marker(
+                [-6.30645454, 107.0251967],
+                {
+}
+            ).addTo(map_584b95e0e929b40034c4a241b7ca3c27);
+        
+    
+        var popup_6cd5bef467009a842aaf446c8472c616 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_49ca3c5f4bc7c1a72a86b9dad3b339d6 = $(`<div id="html_49ca3c5f4bc7c1a72a86b9dad3b339d6" style="width: 100.0%; height: 100.0%;">C - SMPN 26 Kota Bekasi</div>`)[0];
+                popup_6cd5bef467009a842aaf446c8472c616.setContent(html_49ca3c5f4bc7c1a72a86b9dad3b339d6);
+            
+        
+
+        marker_85c446d6374ae08c58c4092490091bba.bindPopup(popup_6cd5bef467009a842aaf446c8472c616)
+        ;
+
+        
+    
+    
+            marker_85c446d6374ae08c58c4092490091bba.bindTooltip(
+                `<div>
+                     SMPN 26 Kota Bekasi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_635578aa99a57e339e59b002475e29ad = L.marker(
+                [-6.30985904, 107.0166897],
+                {
+}
+            ).addTo(map_584b95e0e929b40034c4a241b7ca3c27);
+        
+    
+        var popup_8a1e49b70263fbf327ab4485896b5432 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_50f08cd28cb2288055ac0175e703c01e = $(`<div id="html_50f08cd28cb2288055ac0175e703c01e" style="width: 100.0%; height: 100.0%;">D - SMPN 36 Kota Bekasi</div>`)[0];
+                popup_8a1e49b70263fbf327ab4485896b5432.setContent(html_50f08cd28cb2288055ac0175e703c01e);
+            
+        
+
+        marker_635578aa99a57e339e59b002475e29ad.bindPopup(popup_8a1e49b70263fbf327ab4485896b5432)
+        ;
+
+        
+    
+    
+            marker_635578aa99a57e339e59b002475e29ad.bindTooltip(
+                `<div>
+                     SMPN 36 Kota Bekasi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_c41881c879f152d91ecf4e71763c1382 = L.marker(
+                [-6.29436752, 107.0220758],
+                {
+}
+            ).addTo(map_584b95e0e929b40034c4a241b7ca3c27);
+        
+    
+        var popup_e9c5d0c7522497ea4244348298bfee18 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_a22105cfdb8762167c551deba462d6eb = $(`<div id="html_a22105cfdb8762167c551deba462d6eb" style="width: 100.0%; height: 100.0%;">E - SMPN 40 Kota Bekasi</div>`)[0];
+                popup_e9c5d0c7522497ea4244348298bfee18.setContent(html_a22105cfdb8762167c551deba462d6eb);
+            
+        
+
+        marker_c41881c879f152d91ecf4e71763c1382.bindPopup(popup_e9c5d0c7522497ea4244348298bfee18)
+        ;
+
+        
+    
+    
+            marker_c41881c879f152d91ecf4e71763c1382.bindTooltip(
+                `<div>
+                     SMPN 40 Kota Bekasi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_8892771a190f21dfb4b60c2cbc477591 = L.marker(
+                [-6.32248735, 107.0257286],
+                {
+}
+            ).addTo(map_584b95e0e929b40034c4a241b7ca3c27);
+        
+    
+        var popup_33411ef449bacc83b6bf309f7a70d70e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_34f943a20a599bb7dcde6c08466eef9f = $(`<div id="html_34f943a20a599bb7dcde6c08466eef9f" style="width: 100.0%; height: 100.0%;">F - SMPN 48 Kota Bekasi</div>`)[0];
+                popup_33411ef449bacc83b6bf309f7a70d70e.setContent(html_34f943a20a599bb7dcde6c08466eef9f);
+            
+        
+
+        marker_8892771a190f21dfb4b60c2cbc477591.bindPopup(popup_33411ef449bacc83b6bf309f7a70d70e)
+        ;
+
+        
+    
+    
+            marker_8892771a190f21dfb4b60c2cbc477591.bindTooltip(
+                `<div>
+                     SMPN 48 Kota Bekasi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_96755af6ad321453f8e4088555968fcc = L.marker(
+                [-6.29591056, 107.030672],
+                {
+}
+            ).addTo(map_584b95e0e929b40034c4a241b7ca3c27);
+        
+    
+        var popup_6f804207e55b66191f674ea3918137c0 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_8076fc7d994ad98a3f07c0623f19127b = $(`<div id="html_8076fc7d994ad98a3f07c0623f19127b" style="width: 100.0%; height: 100.0%;">G - SMP Daya Utama</div>`)[0];
+                popup_6f804207e55b66191f674ea3918137c0.setContent(html_8076fc7d994ad98a3f07c0623f19127b);
+            
+        
+
+        marker_96755af6ad321453f8e4088555968fcc.bindPopup(popup_6f804207e55b66191f674ea3918137c0)
+        ;
+
+        
+    
+    
+            marker_96755af6ad321453f8e4088555968fcc.bindTooltip(
+                `<div>
+                     SMP Daya Utama
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_e335e4639fd6293db7466bf097a070ab = L.polyline(
+                [[-6.32646, 107.0154968], [-6.32655, 107.0154257], [-6.3265926, 107.0154016], [-6.3266406, 107.0154123], [-6.3267717, 107.015577], [-6.3268345, 107.0156777], [-6.3268345, 107.0156777], [-6.3272313, 107.0162508], [-6.3272313, 107.0162508], [-6.3273031, 107.016398], [-6.3273151, 107.0164128], [-6.3273391, 107.0164168], [-6.3275611, 107.0163527], [-6.3275611, 107.0163527], [-6.3279403, 107.017481], [-6.3279608, 107.0175327], [-6.3280323, 107.0175563], [-6.328124, 107.0175611], [-6.3282551, 107.017544], [-6.3282551, 107.017544], [-6.3283292, 107.0177648], [-6.3283292, 107.0177648], [-6.3284198, 107.0180412], [-6.328427, 107.0180722], [-6.328427, 107.0180722], [-6.3279799, 107.0182179], [-6.3279799, 107.0182179], [-6.3279976, 107.0183083], [-6.3279976, 107.0183083], [-6.3283107, 107.0191832], [-6.3283107, 107.0191832], [-6.3285394, 107.0199023], [-6.3285394, 107.0199023], [-6.3286184, 107.0201508], [-6.3286201, 107.0201561], [-6.3286468, 107.0202368], [-6.3286468, 107.0202368], [-6.3284261, 107.0206299], [-6.3284261, 107.0206299], [-6.3283687, 107.0207291], [-6.3283687, 107.0207291], [-6.3282995, 107.0208257], [-6.3282995, 107.0208257], [-6.3282441, 107.0208853], [-6.3282025, 107.0209222], [-6.3282025, 107.0209222], [-6.3279466, 107.0210156], [-6.3279466, 107.0210156], [-6.3276343, 107.0211315], [-6.3276343, 107.0211315], [-6.3273318, 107.021248], [-6.3273318, 107.021248], [-6.3270232, 107.0213579], [-6.3270232, 107.0213579], [-6.3267759, 107.0214212], [-6.326363, 107.0214954], [-6.326363, 107.0214954], [-6.3260141, 107.0215586], [-6.3257239, 107.0216078], [-6.3257239, 107.0216078], [-6.325511, 107.0216444], [-6.325511, 107.0216444], [-6.3252996, 107.0217059], [-6.3252317, 107.0217257], [-6.3252317, 107.0217257], [-6.3250372, 107.0217915], [-6.3249228, 107.0218373], [-6.3248256, 107.0218758], [-6.3246639, 107.0219459], [-6.3243947, 107.0220239], [-6.3243947, 107.0220239], [-6.3238941, 107.0221668], [-6.3238355, 107.0221835], [-6.3237277, 107.0222086], [-6.3236368, 107.0222298], [-6.3232887, 107.022317], [-6.3229285, 107.0224351], [-6.3229285, 107.0224351], [-6.3228261, 107.022475], [-6.3224858, 107.0226089], [-6.3220472, 107.022795], [-6.3220472, 107.022795], [-6.3218879, 107.0228652], [-6.3214674, 107.0230312], [-6.3214674, 107.0230312], [-6.3210828, 107.0231694], [-6.3210505, 107.023182], [-6.3210505, 107.023182], [-6.3206407, 107.0233361], [-6.3206055, 107.0233516], [-6.3206055, 107.0233516], [-6.3205769, 107.0233638], [-6.3205769, 107.0233638], [-6.3203503, 107.0234638], [-6.3203503, 107.0234638], [-6.3196725, 107.0237424], [-6.3196725, 107.0237424], [-6.3193504, 107.0239311], [-6.3190554, 107.0241171], [-6.318906, 107.0241887], [-6.3188033, 107.0242283], [-6.3186985, 107.0242579], [-6.3186985, 107.0242579], [-6.3185807, 107.0242882], [-6.3183534, 107.024339], [-6.3183534, 107.024339], [-6.3181556, 107.0243994], [-6.3180092, 107.02446], [-6.317813, 107.0245713], [-6.317813, 107.0245713], [-6.3175909, 107.0247334], [-6.3175909, 107.0247334], [-6.3175236, 107.0247863], [-6.3175236, 107.0247863], [-6.3173998, 107.0248778], [-6.3173998, 107.0248778], [-6.3172904, 107.0249521], [-6.3172904, 107.0249521], [-6.3171444, 107.0250468], [-6.3171444, 107.0250468], [-6.316982, 107.0251492], [-6.316982, 107.0251492], [-6.3169368, 107.0251747], [-6.3169368, 107.0251747], [-6.3167944, 107.0252325], [-6.3166594, 107.0252783], [-6.3161969, 107.0254193], [-6.3157919, 107.0255636], [-6.3155898, 107.0255846], [-6.3154193, 107.0255508], [-6.3153192, 107.0254982], [-6.3153192, 107.0254982], [-6.3152014, 107.025482], [-6.3147873, 107.025532], [-6.3147873, 107.025532], [-6.3146599, 107.0255698], [-6.3141992, 107.0258085], [-6.3141992, 107.0258085], [-6.3140676, 107.0258514], [-6.3139389, 107.0258908], [-6.3139389, 107.0258908], [-6.3132094, 107.0261011], [-6.3131697, 107.0261123], [-6.3129948, 107.0261642], [-6.3129948, 107.0261642], [-6.31285, 107.0262072], [-6.3126483, 107.026264], [-6.3126483, 107.026264], [-6.3126034, 107.0262736], [-6.3122587, 107.0263502], [-6.3121236, 107.0263841], [-6.3120403, 107.0264249], [-6.3119841, 107.0264704], [-6.3119344, 107.02652], [-6.3119075, 107.0265669], [-6.3118748, 107.026636], [-6.311806, 107.0267897], [-6.3116171, 107.027285], [-6.3115707, 107.0273956], [-6.311518, 107.027478], [-6.3114568, 107.0275516], [-6.3114568, 107.0275516], [-6.311419, 107.0275868], [-6.3113703, 107.0276122], [-6.3113142, 107.0276309], [-6.3111771, 107.027666], [-6.3111771, 107.027666], [-6.3106384, 107.027823], [-6.309979, 107.0280153], [-6.309979, 107.0280153], [-6.3095926, 107.0281279], [-6.3095926, 107.0281279], [-6.3094514, 107.0281691], [-6.3092869, 107.028217], [-6.3089544, 107.028314], [-6.3089544, 107.028314], [-6.3088589, 107.0283418], [-6.3086241, 107.0284231], [-6.308271, 107.0285331], [-6.308271, 107.0285331], [-6.3081852, 107.0285665], [-6.3081852, 107.0285665], [-6.3079451, 107.028667], [-6.3076478, 107.0288088], [-6.3076478, 107.0288088], [-6.3074582, 107.0288922], [-6.3072035, 107.0290224], [-6.3070199, 107.0291092], [-6.3070199, 107.0291092], [-6.3067768, 107.0292284], [-6.3066197, 107.029303], [-6.3065429, 107.0293343], [-6.3064569, 107.0293584], [-6.3063789, 107.0293678], [-6.3062965, 107.0293689], [-6.3062965, 107.0293689], [-6.3062154, 107.0293496], [-6.3060444, 107.0293008], [-6.3059844, 107.0292739], [-6.3058218, 107.0291935], [-6.3056711, 107.0291175], [-6.3056711, 107.0291175], [-6.3055792, 107.0290674], [-6.305488, 107.0290269], [-6.3053805, 107.0289856], [-6.3052472, 107.0289387], [-6.3050074, 107.0288937], [-6.3049325, 107.0288825], [-6.3049325, 107.0288825], [-6.3048212, 107.0288717], [-6.3048212, 107.0288717], [-6.3046371, 107.0288643], [-6.3044776, 107.0288709], [-6.3042736, 107.0288866], [-6.3040607, 107.0289162], [-6.3040607, 107.0289162], [-6.3039331, 107.0289331], [-6.3038099, 107.0289455], [-6.3038099, 107.0289455], [-6.3036745, 107.0289691], [-6.3035557, 107.0289847], [-6.3034378, 107.029004], [-6.3033608, 107.0290178], [-6.3033066, 107.0290275], [-6.3031804, 107.0290513], [-6.3030013, 107.0290694], [-6.3030013, 107.0290694], [-6.3028061, 107.0291], [-6.302701, 107.029114], [-6.3026031, 107.0291281], [-6.3024881, 107.0291488], [-6.3023923, 107.0291663], [-6.302254, 107.0291803], [-6.3021481, 107.0291946], [-6.3020511, 107.0292123], [-6.3020511, 107.0292123], [-6.3019038, 107.02923], [-6.3017811, 107.0292552], [-6.3016146, 107.0292887], [-6.3014606, 107.029317], [-6.3013629, 107.0293308], [-6.3013629, 107.0293308], [-6.3012518, 107.0293595], [-6.3011754, 107.0293811], [-6.3010158, 107.0294209], [-6.3010158, 107.0294209], [-6.3008952, 107.0294526], [-6.3008037, 107.0294784], [-6.3006963, 107.0295107], [-6.3005928, 107.0295399], [-6.3003631, 107.0296082], [-6.3001518, 107.0296663], [-6.2999628, 107.0297232], [-6.2997845, 107.0297744], [-6.2996442, 107.0298225], [-6.2996442, 107.0298225], [-6.2995346, 107.0298585], [-6.2994307, 107.029897], [-6.2992963, 107.0299392], [-6.2991041, 107.0300009], [-6.2991041, 107.0300009], [-6.2990373, 107.0300246], [-6.2990373, 107.0300246], [-6.2987973, 107.0301165], [-6.2987973, 107.0301165], [-6.2987169, 107.0301417], [-6.2987169, 107.0301417], [-6.2986318, 107.0301647], [-6.2986318, 107.0301647], [-6.2984745, 107.030213], [-6.2983701, 107.030247], [-6.2982924, 107.0302707], [-6.2977604, 107.0304455], [-6.2977604, 107.0304455], [-6.2974548, 107.0305355], [-6.2972097, 107.030611], [-6.2970631, 107.0306491], [-6.2970631, 107.0306491], [-6.296394, 107.030825], [-6.296063, 107.0308888], [-6.296063, 107.0308888], [-6.2960186, 107.0308953]],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 6}
+            ).addTo(map_584b95e0e929b40034c4a241b7ca3c27);
+        
+    
+            poly_line_e335e4639fd6293db7466bf097a070ab.bindTooltip(
+                `<div>
+                     Rute A* melalui jaringan jalan
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            map_584b95e0e929b40034c4a241b7ca3c27.fitBounds(
+                [[-6.32646, 107.0154968], [-6.32655, 107.0154257], [-6.3265926, 107.0154016], [-6.3266406, 107.0154123], [-6.3267717, 107.015577], [-6.3268345, 107.0156777], [-6.3268345, 107.0156777], [-6.3272313, 107.0162508], [-6.3272313, 107.0162508], [-6.3273031, 107.016398], [-6.3273151, 107.0164128], [-6.3273391, 107.0164168], [-6.3275611, 107.0163527], [-6.3275611, 107.0163527], [-6.3279403, 107.017481], [-6.3279608, 107.0175327], [-6.3280323, 107.0175563], [-6.328124, 107.0175611], [-6.3282551, 107.017544], [-6.3282551, 107.017544], [-6.3283292, 107.0177648], [-6.3283292, 107.0177648], [-6.3284198, 107.0180412], [-6.328427, 107.0180722], [-6.328427, 107.0180722], [-6.3279799, 107.0182179], [-6.3279799, 107.0182179], [-6.3279976, 107.0183083], [-6.3279976, 107.0183083], [-6.3283107, 107.0191832], [-6.3283107, 107.0191832], [-6.3285394, 107.0199023], [-6.3285394, 107.0199023], [-6.3286184, 107.0201508], [-6.3286201, 107.0201561], [-6.3286468, 107.0202368], [-6.3286468, 107.0202368], [-6.3284261, 107.0206299], [-6.3284261, 107.0206299], [-6.3283687, 107.0207291], [-6.3283687, 107.0207291], [-6.3282995, 107.0208257], [-6.3282995, 107.0208257], [-6.3282441, 107.0208853], [-6.3282025, 107.0209222], [-6.3282025, 107.0209222], [-6.3279466, 107.0210156], [-6.3279466, 107.0210156], [-6.3276343, 107.0211315], [-6.3276343, 107.0211315], [-6.3273318, 107.021248], [-6.3273318, 107.021248], [-6.3270232, 107.0213579], [-6.3270232, 107.0213579], [-6.3267759, 107.0214212], [-6.326363, 107.0214954], [-6.326363, 107.0214954], [-6.3260141, 107.0215586], [-6.3257239, 107.0216078], [-6.3257239, 107.0216078], [-6.325511, 107.0216444], [-6.325511, 107.0216444], [-6.3252996, 107.0217059], [-6.3252317, 107.0217257], [-6.3252317, 107.0217257], [-6.3250372, 107.0217915], [-6.3249228, 107.0218373], [-6.3248256, 107.0218758], [-6.3246639, 107.0219459], [-6.3243947, 107.0220239], [-6.3243947, 107.0220239], [-6.3238941, 107.0221668], [-6.3238355, 107.0221835], [-6.3237277, 107.0222086], [-6.3236368, 107.0222298], [-6.3232887, 107.022317], [-6.3229285, 107.0224351], [-6.3229285, 107.0224351], [-6.3228261, 107.022475], [-6.3224858, 107.0226089], [-6.3220472, 107.022795], [-6.3220472, 107.022795], [-6.3218879, 107.0228652], [-6.3214674, 107.0230312], [-6.3214674, 107.0230312], [-6.3210828, 107.0231694], [-6.3210505, 107.023182], [-6.3210505, 107.023182], [-6.3206407, 107.0233361], [-6.3206055, 107.0233516], [-6.3206055, 107.0233516], [-6.3205769, 107.0233638], [-6.3205769, 107.0233638], [-6.3203503, 107.0234638], [-6.3203503, 107.0234638], [-6.3196725, 107.0237424], [-6.3196725, 107.0237424], [-6.3193504, 107.0239311], [-6.3190554, 107.0241171], [-6.318906, 107.0241887], [-6.3188033, 107.0242283], [-6.3186985, 107.0242579], [-6.3186985, 107.0242579], [-6.3185807, 107.0242882], [-6.3183534, 107.024339], [-6.3183534, 107.024339], [-6.3181556, 107.0243994], [-6.3180092, 107.02446], [-6.317813, 107.0245713], [-6.317813, 107.0245713], [-6.3175909, 107.0247334], [-6.3175909, 107.0247334], [-6.3175236, 107.0247863], [-6.3175236, 107.0247863], [-6.3173998, 107.0248778], [-6.3173998, 107.0248778], [-6.3172904, 107.0249521], [-6.3172904, 107.0249521], [-6.3171444, 107.0250468], [-6.3171444, 107.0250468], [-6.316982, 107.0251492], [-6.316982, 107.0251492], [-6.3169368, 107.0251747], [-6.3169368, 107.0251747], [-6.3167944, 107.0252325], [-6.3166594, 107.0252783], [-6.3161969, 107.0254193], [-6.3157919, 107.0255636], [-6.3155898, 107.0255846], [-6.3154193, 107.0255508], [-6.3153192, 107.0254982], [-6.3153192, 107.0254982], [-6.3152014, 107.025482], [-6.3147873, 107.025532], [-6.3147873, 107.025532], [-6.3146599, 107.0255698], [-6.3141992, 107.0258085], [-6.3141992, 107.0258085], [-6.3140676, 107.0258514], [-6.3139389, 107.0258908], [-6.3139389, 107.0258908], [-6.3132094, 107.0261011], [-6.3131697, 107.0261123], [-6.3129948, 107.0261642], [-6.3129948, 107.0261642], [-6.31285, 107.0262072], [-6.3126483, 107.026264], [-6.3126483, 107.026264], [-6.3126034, 107.0262736], [-6.3122587, 107.0263502], [-6.3121236, 107.0263841], [-6.3120403, 107.0264249], [-6.3119841, 107.0264704], [-6.3119344, 107.02652], [-6.3119075, 107.0265669], [-6.3118748, 107.026636], [-6.311806, 107.0267897], [-6.3116171, 107.027285], [-6.3115707, 107.0273956], [-6.311518, 107.027478], [-6.3114568, 107.0275516], [-6.3114568, 107.0275516], [-6.311419, 107.0275868], [-6.3113703, 107.0276122], [-6.3113142, 107.0276309], [-6.3111771, 107.027666], [-6.3111771, 107.027666], [-6.3106384, 107.027823], [-6.309979, 107.0280153], [-6.309979, 107.0280153], [-6.3095926, 107.0281279], [-6.3095926, 107.0281279], [-6.3094514, 107.0281691], [-6.3092869, 107.028217], [-6.3089544, 107.028314], [-6.3089544, 107.028314], [-6.3088589, 107.0283418], [-6.3086241, 107.0284231], [-6.308271, 107.0285331], [-6.308271, 107.0285331], [-6.3081852, 107.0285665], [-6.3081852, 107.0285665], [-6.3079451, 107.028667], [-6.3076478, 107.0288088], [-6.3076478, 107.0288088], [-6.3074582, 107.0288922], [-6.3072035, 107.0290224], [-6.3070199, 107.0291092], [-6.3070199, 107.0291092], [-6.3067768, 107.0292284], [-6.3066197, 107.029303], [-6.3065429, 107.0293343], [-6.3064569, 107.0293584], [-6.3063789, 107.0293678], [-6.3062965, 107.0293689], [-6.3062965, 107.0293689], [-6.3062154, 107.0293496], [-6.3060444, 107.0293008], [-6.3059844, 107.0292739], [-6.3058218, 107.0291935], [-6.3056711, 107.0291175], [-6.3056711, 107.0291175], [-6.3055792, 107.0290674], [-6.305488, 107.0290269], [-6.3053805, 107.0289856], [-6.3052472, 107.0289387], [-6.3050074, 107.0288937], [-6.3049325, 107.0288825], [-6.3049325, 107.0288825], [-6.3048212, 107.0288717], [-6.3048212, 107.0288717], [-6.3046371, 107.0288643], [-6.3044776, 107.0288709], [-6.3042736, 107.0288866], [-6.3040607, 107.0289162], [-6.3040607, 107.0289162], [-6.3039331, 107.0289331], [-6.3038099, 107.0289455], [-6.3038099, 107.0289455], [-6.3036745, 107.0289691], [-6.3035557, 107.0289847], [-6.3034378, 107.029004], [-6.3033608, 107.0290178], [-6.3033066, 107.0290275], [-6.3031804, 107.0290513], [-6.3030013, 107.0290694], [-6.3030013, 107.0290694], [-6.3028061, 107.0291], [-6.302701, 107.029114], [-6.3026031, 107.0291281], [-6.3024881, 107.0291488], [-6.3023923, 107.0291663], [-6.302254, 107.0291803], [-6.3021481, 107.0291946], [-6.3020511, 107.0292123], [-6.3020511, 107.0292123], [-6.3019038, 107.02923], [-6.3017811, 107.0292552], [-6.3016146, 107.0292887], [-6.3014606, 107.029317], [-6.3013629, 107.0293308], [-6.3013629, 107.0293308], [-6.3012518, 107.0293595], [-6.3011754, 107.0293811], [-6.3010158, 107.0294209], [-6.3010158, 107.0294209], [-6.3008952, 107.0294526], [-6.3008037, 107.0294784], [-6.3006963, 107.0295107], [-6.3005928, 107.0295399], [-6.3003631, 107.0296082], [-6.3001518, 107.0296663], [-6.2999628, 107.0297232], [-6.2997845, 107.0297744], [-6.2996442, 107.0298225], [-6.2996442, 107.0298225], [-6.2995346, 107.0298585], [-6.2994307, 107.029897], [-6.2992963, 107.0299392], [-6.2991041, 107.0300009], [-6.2991041, 107.0300009], [-6.2990373, 107.0300246], [-6.2990373, 107.0300246], [-6.2987973, 107.0301165], [-6.2987973, 107.0301165], [-6.2987169, 107.0301417], [-6.2987169, 107.0301417], [-6.2986318, 107.0301647], [-6.2986318, 107.0301647], [-6.2984745, 107.030213], [-6.2983701, 107.030247], [-6.2982924, 107.0302707], [-6.2977604, 107.0304455], [-6.2977604, 107.0304455], [-6.2974548, 107.0305355], [-6.2972097, 107.030611], [-6.2970631, 107.0306491], [-6.2970631, 107.0306491], [-6.296394, 107.030825], [-6.296063, 107.0308888], [-6.296063, 107.0308888], [-6.2960186, 107.0308953]],
+                {}
+            );
+        
+</script>
+</html>

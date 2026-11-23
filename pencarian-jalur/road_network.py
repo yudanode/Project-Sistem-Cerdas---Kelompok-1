@@ -1,0 +1,199 @@
+import folium
+import osmnx as ox
+
+# Koordinat sekolah dari jurnal
+koordinat = {
+    "A": (-6.32631417, 107.0156000),
+    "B": (-6.31682806, 107.0084318),
+    "C": (-6.30645454, 107.0251967),
+    "D": (-6.30985904, 107.0166897),
+    "E": (-6.29436752, 107.0220758),
+    "F": (-6.32248735, 107.0257286),
+    "G": (-6.29591056, 107.0306720)
+}
+
+nama_sekolah = {
+    "A": "SDN Cimuning 5",
+    "B": "SMPN 10 Kota Bekasi",
+    "C": "SMPN 26 Kota Bekasi",
+    "D": "SMPN 36 Kota Bekasi",
+    "E": "SMPN 40 Kota Bekasi",
+    "F": "SMPN 48 Kota Bekasi",
+    "G": "SMP Daya Utama"
+}
+
+# Menghitung titik tengah wilayah sekolah
+latitude_tengah = sum(
+    lokasi[0] for lokasi in koordinat.values()
+) / len(koordinat)
+
+longitude_tengah = sum(
+    lokasi[1] for lokasi in koordinat.values()
+) / len(koordinat)
+
+# Mengambil jaringan jalan kendaraan bermotor
+print("Mengambil jaringan jalan OpenStreetMap...")
+
+G = ox.graph.graph_from_point(
+    (latitude_tengah, longitude_tengah),
+    dist=5000,
+    network_type="drive"
+)
+
+print("Jaringan jalan berhasil diambil!")
+print("Jumlah titik jalan:", len(G.nodes))
+print("Jumlah ruas jalan:", len(G.edges))
+
+
+# Menghubungkan setiap sekolah ke titik jalan terdekat
+print("\nMenghubungkan sekolah ke jaringan jalan...")
+
+sekolah_nodes = {}
+
+for kode, lokasi in koordinat.items():
+
+    latitude, longitude = lokasi
+
+    node_jalan = ox.distance.nearest_nodes(
+        G,
+        X=longitude,
+        Y=latitude
+    )
+
+    sekolah_nodes[kode] = node_jalan
+
+    print(
+        kode,
+        "-",
+        nama_sekolah[kode],
+        "-> Node jalan:",
+        node_jalan
+    )
+
+print("\nSemua sekolah berhasil dihubungkan!")
+
+
+import networkx as nx
+from math import radians, sin, cos, sqrt, atan2
+
+# Mengubah graph jalan menjadi directed graph
+G_astar = G
+
+
+# Menghitung jarak garis lurus (Haversine)
+def heuristik(node1, node2):
+
+    lat1 = radians(G_astar.nodes[node1]["y"])
+    lon1 = radians(G_astar.nodes[node1]["x"])
+
+    lat2 = radians(G_astar.nodes[node2]["y"])
+    lon2 = radians(G_astar.nodes[node2]["x"])
+
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+
+    a = (
+        sin(dlat / 2) ** 2
+        + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    )
+
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    return 6371000 * c
+
+
+# Fungsi pencarian rute A*
+def cari_rute_astar(kode_awal, kode_tujuan):
+
+    node_awal = sekolah_nodes[kode_awal]
+    node_tujuan = sekolah_nodes[kode_tujuan]
+
+    rute = nx.astar_path(
+        G_astar,
+        source=node_awal,
+        target=node_tujuan,
+        heuristic=heuristik,
+        weight="length"
+    )
+
+    jarak = sum(
+    min(data["length"] for data in G_astar[u][v].values())
+    for u, v in zip(rute[:-1], rute[1:])
+)
+
+    return rute, jarak
+
+
+def tampilkan_peta_rute(rute, kode_awal, kode_tujuan):
+
+    # Mengambil geometri ruas jalan dari rute A*
+    edges = ox.routing.route_to_gdf(
+        G_astar,
+        rute,
+        weight="length"
+    )
+
+    koordinat_jalan = []
+
+    # Menggabungkan koordinat setiap ruas jalan
+    for geometry in edges.geometry:
+
+        if geometry is None:
+            continue
+
+        if geometry.geom_type == "LineString":
+            koordinat_jalan.extend(
+                [(lat, lon) for lon, lat in geometry.coords]
+            )
+
+        elif geometry.geom_type == "MultiLineString":
+            for line in geometry.geoms:
+                koordinat_jalan.extend(
+                    [(lat, lon) for lon, lat in line.coords]
+                )
+
+    # Membuat peta
+    peta = folium.Map(
+    location=koordinat[kode_awal],
+    zoom_start=15,
+    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    attr="Tiles © Esri"
+)
+
+    # Menampilkan semua sekolah
+    for kode, lokasi in koordinat.items():
+
+        folium.Marker(
+            location=lokasi,
+            popup=f"{kode} - {nama_sekolah[kode]}",
+            tooltip=nama_sekolah[kode]
+        ).add_to(peta)
+
+    # Menampilkan jalur jalan hasil A*
+    folium.PolyLine(
+        locations=koordinat_jalan,
+        color="red",
+        weight=6,
+        opacity=0.85,
+        tooltip="Rute A* melalui jaringan jalan"
+    ).add_to(peta)
+
+    # Menyesuaikan tampilan peta dengan rute
+    peta.fit_bounds(koordinat_jalan)
+
+    nama_file = f"rute_{kode_awal}_ke_{kode_tujuan}.html"
+    peta.save(nama_file)
+
+    print("\nPeta berhasil disimpan:", nama_file)
+
+
+# Pengujian pencarian rute
+print("\nPENGUJIAN A* JARINGAN JALAN")
+
+rute, jarak = cari_rute_astar("A", "G")
+
+print("Asal: ", nama_sekolah["A"])
+print("Tujuan: ", nama_sekolah["G"])
+print("Jumlah titik yang dilewati:", len(rute))
+print("Total jarak:", round(jarak / 1000, 2), "km")
+tampilkan_peta_rute(rute, "A", "G")
