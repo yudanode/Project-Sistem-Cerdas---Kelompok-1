@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}WEBGIS SMP{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="wrapper">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <h2>WEBGIS SMP</h2>
+
+            <nav>
+                <a href="/">Beranda</a>
+                <a href="/data-sekolah">Data Sekolah</a>
+                <a href="/rute-sekolah">Rute Sekolah</a>
+                <a href="#">Logout</a>
+            </nav>
+        </aside>
+
+        <!-- KONTEN UTAMA -->
+        <main class="main-content">
+
+            <header class="navbar">
+                <h3>WEBGIS SMP</h3>
+            </header>
+
+            <section class="content">
+                {% block content %}
+                {% endblock %}
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+</html>
