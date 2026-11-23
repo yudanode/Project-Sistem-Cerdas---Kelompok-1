@@ -1,0 +1,155 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="table-container">
+
+    <h2>Pencarian Rute Sekolah</h2>
+
+    <p>
+        Cari rute terpendek antar sekolah menggunakan
+        algoritma A* dan jaringan jalan OpenStreetMap.
+    </p>
+
+    <form method="POST" action="{{ url_for('rute_sekolah') }}">
+
+        <div style="margin-bottom: 20px;">
+
+            <label for="asal">
+                <strong>Sekolah Asal</strong>
+            </label>
+
+            <select
+                name="asal"
+                id="asal"
+                required
+                style="width: 100%; padding: 10px; margin-top: 8px;"
+            >
+
+                <option value="">-- Pilih Sekolah Asal --</option>
+
+                {% for item in sekolah %}
+
+                    <option
+                        value="{{ item.kode }}"
+                        {% if asal == item.kode %}selected{% endif %}
+                    >
+                        {{ item.nama }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div style="margin-bottom: 20px;">
+
+            <label for="tujuan">
+                <strong>Sekolah Tujuan</strong>
+            </label>
+
+            <select
+                name="tujuan"
+                id="tujuan"
+                required
+                style="width: 100%; padding: 10px; margin-top: 8px;"
+            >
+
+                <option value="">-- Pilih Sekolah Tujuan --</option>
+
+                {% for item in sekolah %}
+
+                    <option
+                        value="{{ item.kode }}"
+                        {% if tujuan == item.kode %}selected{% endif %}
+                    >
+                        {{ item.nama }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <button
+            type="submit"
+            style="
+                background-color: #2563eb;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 6px;
+                cursor: pointer;
+            "
+        >
+            Cari Rute
+        </button>
+
+    </form>
+
+</div>
+
+
+{% if pesan_error %}
+
+    <div class="table-container"
+         style="margin-top: 20px; color: red;">
+
+        <h3>Terjadi Kesalahan</h3>
+
+        <p>{{ pesan_error }}</p>
+
+    </div>
+
+{% endif %}
+
+
+{% if hasil %}
+
+    <div class="table-container" style="margin-top: 20px;">
+
+        <h2>Hasil Pencarian Rute</h2>
+
+        <p>
+            <strong>Asal:</strong>
+            {{ hasil.asal }}
+        </p>
+
+        <p>
+            <strong>Tujuan:</strong>
+            {{ hasil.tujuan }}
+        </p>
+
+        <p>
+            <strong>Total Jarak:</strong>
+            {{ hasil.jarak }} km
+        </p>
+
+        <p>
+            <strong>Algoritma:</strong>
+            A* (A-Star)
+        </p>
+
+    </div>
+
+    <div class="table-container" style="margin-top: 20px;">
+
+        <h2>Peta Rute</h2>
+
+        <iframe
+            src="{{ url_for('static', filename='rute_terakhir.html') }}"
+            width="100%"
+            height="600"
+            style="border: none;"
+            loading="lazy"
+        >
+        </iframe>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}
