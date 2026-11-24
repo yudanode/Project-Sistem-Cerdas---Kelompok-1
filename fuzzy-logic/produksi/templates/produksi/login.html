@@ -1,0 +1,49 @@
+{% extends "produksi/base.html" %}
+{% block title %}LoginForm{% endblock %}
+{% block wclass %}login{% endblock %}
+{% block wtitle %}LoginForm{% endblock %}
+{% block ctrl %}<span class="tutup">&#10005;</span>{% endblock %}
+
+{% block body %}
+{% if messages %}
+<div class="login-pesan">
+  <ul class="pesan">
+    {% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}
+  </ul>
+</div>
+{% endif %}
+<form method="post" class="login-body" autocomplete="off">
+  {% csrf_token %}
+  <div class="login-art" aria-hidden="true">
+    <svg width="220" height="200" viewBox="0 0 220 200">
+      <defs>
+        <linearGradient id="gHijau" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7bd16a"/><stop offset="1" stop-color="#1f7a35"/></linearGradient>
+        <linearGradient id="gBiru" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8aa7ff"/><stop offset="1" stop-color="#2a3ab5"/></linearGradient>
+        <linearGradient id="gJingga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb070"/><stop offset="1" stop-color="#d4440f"/></linearGradient>
+      </defs>
+      <g fill="none" stroke-width="20" stroke-linecap="round">
+        <ellipse cx="80" cy="100" rx="46" ry="82" stroke="url(#gHijau)" transform="rotate(-38 80 100)"/>
+        <ellipse cx="122" cy="96" rx="46" ry="82" stroke="url(#gBiru)" transform="rotate(8 122 96)"/>
+        <ellipse cx="104" cy="126" rx="46" ry="82" stroke="url(#gJingga)" transform="rotate(62 104 126)"/>
+      </g>
+    </svg>
+  </div>
+  <div class="login-form">
+    <label for="username">User name</label>
+    <input type="text" id="username" name="username" value="{{ username }}" autofocus>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password">
+    <label for="level">Level</label>
+    <select id="level" name="level">
+      <option value=""></option>
+      {% for kode, nama in levels %}
+      <option value="{{ kode }}" {% if kode == level_dipilih %}selected{% endif %}>{{ nama }}</option>
+      {% endfor %}
+    </select>
+    <div class="login-aksi">
+      <button type="submit">Masuk</button>
+      <button type="reset">Keluar</button>
+    </div>
+  </div>
+</form>
+{% endblock %}

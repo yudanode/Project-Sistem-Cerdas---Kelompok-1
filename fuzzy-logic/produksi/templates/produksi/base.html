@@ -1,0 +1,57 @@
+{% load static %}<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ judul|default:"Optimasi Produksi Barang" }}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'produksi/style.css' %}">
+</head>
+<body>
+<div class="desktop">
+  <div class="window {% block wclass %}{% endblock %}">
+    <div class="titlebar">
+      <span class="ikon"></span>
+      <span class="judul">{% block wtitle %}{{ judul }}{% endblock %}</span>
+      <span class="ctrl">{% block ctrl %}<span>&#8211;</span><span>&#9633;</span><span class="tutup">&#10005;</span>{% endblock %}</span>
+    </div>
+
+    {% block menu %}
+    {% if user.is_authenticated and user.profile %}
+    {% with lv=user.profile.level nm=request.resolver_match.url_name %}
+    <nav class="menubar">
+      <a href="{% url 'kelola_pengguna' %}" class="{% if nm == 'kelola_pengguna' %}aktif{% endif %}">Kelola Pengguna</a>
+      {% if lv == 'operator_order' %}
+        <a href="{% url 'data_permintaan' %}" class="{% if nm == 'data_permintaan' %}aktif{% endif %}">Data Permintaan</a>
+      {% elif lv == 'operator_gudang' %}
+        <a href="{% url 'data_persediaan' %}" class="{% if nm == 'data_persediaan' %}aktif{% endif %}">Data Persediaan</a>
+      {% elif lv == 'administrator' %}
+        <a href="{% url 'data_produksi' %}" class="{% if nm == 'data_produksi' %}aktif{% endif %}">Data Produksi</a>
+        <a href="{% url 'laporan' %}" class="{% if nm == 'laporan' %}aktif{% endif %}">Laporan</a>
+      {% endif %}
+      <a href="{% url 'logout' %}">Keluar</a>
+    </nav>
+    {% endwith %}
+    {% endif %}
+    {% endblock %}
+
+    {% block body %}
+    <div class="client {% block cclass %}{% endblock %}">
+      {% if messages %}
+      <ul class="pesan">
+        {% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
+    {% endblock %}
+
+    {% if user.is_authenticated and user.profile %}
+    <div class="status">
+      <span>Login sebagai: {{ user.username }}</span>
+      <span>{{ user.profile.get_level_display }}</span>
+    </div>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

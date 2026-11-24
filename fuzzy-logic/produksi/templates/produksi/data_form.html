@@ -1,0 +1,55 @@
+{% extends "produksi/base.html" %}
+{% block content %}
+<form method="post" class="data" autocomplete="off">
+  {% csrf_token %}
+  {% if terpilih %}<input type="hidden" name="pk" value="{{ terpilih.pk }}">{% endif %}
+
+  <div class="data-form">
+    <span>{{ label_id }}</span>
+    <input type="text" value="{{ kode_tampil }}" readonly>
+
+    <span>Tanggal</span>
+    {{ form.tanggal }}
+
+    <span>Jenis Barang</span>
+    {{ form.barang }}
+
+    <span>{{ label_jumlah }}</span>
+    {{ form.jumlah }}
+  </div>
+
+  {% if not ada_barang %}
+  <ul class="pesan"><li class="info">Belum ada jenis barang. Tambahkan lewat halaman /django-admin/ atau jalankan <code>python manage.py seed_jurnal</code>.</li></ul>
+  {% endif %}
+
+  <div class="data-aksi">
+    <button type="submit" name="aksi" value="input">Input</button>
+    <button type="submit" name="aksi" value="ubah" {% if not terpilih %}disabled{% endif %}>Ubah</button>
+    <button type="submit" name="aksi" value="hapus" {% if not terpilih %}disabled{% endif %}
+            onclick="return confirm('Hapus data {{ terpilih.kode }}?');">Hapus</button>
+    <a class="btn" href="{% url 'beranda' %}">Keluar</a>
+  </div>
+</form>
+
+<div class="grid-wrap">
+  {% if daftar %}
+  <table class="grid">
+    <thead>
+      <tr><th>{{ kolom_kode }}</th><th>tanggal</th><th>jenis_barang</th><th>jumlah</th></tr>
+    </thead>
+    <tbody>
+      {% for o in daftar %}
+      <tr class="{% if terpilih and terpilih.pk == o.pk %}terpilih{% endif %}" onclick="location.href='?pilih={{ o.pk }}'">
+        <td><a href="?pilih={{ o.pk }}">{{ o.kode }}</a></td>
+        <td>{{ o.tanggal|date:"n/j/Y" }}</td>
+        <td>{{ o.barang.nama }}</td>
+        <td class="kanan">{{ o.jumlah }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="grid-kosong">Belum ada data.</div>
+  {% endif %}
+</div>
+{% endblock %}

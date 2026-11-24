@@ -1,0 +1,138 @@
+{% extends "produksi/base.html" %}
+{% load l10n %}
+{% block wclass %}besar{% endblock %}
+{% block content %}
+<form method="post" class="produksi" autocomplete="off">
+  {% csrf_token %}
+
+  <fieldset class="grp">
+    <legend>Data Produksi</legend>
+    <div class="baris-atas">
+      <div class="f"><span>Tahun</span>
+        <select name="tahun_scope">
+          <option value="semua" {% if tahun_scope == 'semua' %}selected{% endif %}>Semua tahun</option>
+          {% for t in tahun_list %}
+          <option value="{{ t|unlocalize }}" {% if t|stringformat:"s" == tahun_scope %}selected{% endif %}>{{ t|unlocalize }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="f"><span>Jenis Barang</span>
+        <select name="barang">
+          <option value=""></option>
+          {% for b in barang_list %}
+          <option value="{{ b.pk }}" {% if b.pk|stringformat:"s" == barang_id %}selected{% endif %}>{{ b.nama }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" name="aksi" value="pilih">Pilih</button>
+    </div>
+
+    <div class="tiga" style="margin-top:8px">
+      <div class="f"><span>Permintaan MAX</span><div class="ro">{{ pmt_max|default_if_none:""|unlocalize }}</div></div>
+      <div class="f"><span>Persediaan MAX</span><div class="ro">{{ psd_max|default_if_none:""|unlocalize }}</div></div>
+      <div class="f"><span>Produksi MAX</span><div class="ro">{{ prod_max|unlocalize }}</div></div>
+      <div class="f"><span>Permintaan MIN</span><div class="ro">{{ pmt_min|default_if_none:""|unlocalize }}</div></div>
+      <div class="f"><span>Persediaan MIN</span><div class="ro">{{ psd_min|default_if_none:""|unlocalize }}</div></div>
+      <div class="f"><span>Produksi MIN</span><div class="ro">{{ prod_min|unlocalize }}</div></div>
+    </div>
+  </fieldset>
+
+  <div class="tengah">
+    <fieldset class="grp">
+      <legend>Permintaan dan Persediaan</legend>
+      <div class="periode">
+        <div class="f"><span>Bulan</span>
+          <select name="bulan">
+            <option value=""></option>
+            {% for no, nama in daftar_bulan %}
+            <option value="{{ no }}" {% if no|stringformat:"s" == bulan %}selected{% endif %}>{{ nama }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="f"><span>Tahun</span>
+          <select name="tahun">
+            <option value=""></option>
+            {% for t in tahun_list %}
+            <option value="{{ t|unlocalize }}" {% if t|stringformat:"s" == tahun %}selected{% endif %}>{{ t|unlocalize }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="f"><span>Permintaan</span><div class="ro">{{ permintaan|default_if_none:""|unlocalize }}</div></div>
+        <div class="f"><span>Persediaan</span><div class="ro">{{ persediaan|default_if_none:""|unlocalize }}</div></div>
+      </div>
+    </fieldset>
+    <fieldset class="grp">
+      <legend>Aksi</legend>
+      <div class="aksi-grup" style="margin-top:0">
+        <button type="submit" name="aksi" value="hitung" style="min-width:56px">Hitung</button>
+        <button type="submit" name="aksi" value="simpan" style="min-width:56px" {% if not f %}disabled title="Tekan Hitung terlebih dahulu"{% endif %}>Simpan</button>
+        <a class="btn" href="{% url 'beranda' %}" style="min-width:56px">Keluar</a>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="tengah">
+    <fieldset class="grp">
+      <legend>Fuzzifikasi</legend>
+      <div class="tiga-kolom">
+        <div>
+          <div class="kolom-judul">Permintaan</div>
+          <div class="sub"><span>Turun</span><div class="ro">{% if f %}{{ f.mu_permintaan.turun|floatformat:4 }}{% endif %}</div>
+            <span>Naik</span><div class="ro">{% if f %}{{ f.mu_permintaan.naik|floatformat:4 }}{% endif %}</div></div>
+        </div>
+        <div>
+          <div class="kolom-judul">Persediaan</div>
+          <div class="sub"><span>Sedikit</span><div class="ro">{% if f %}{{ f.mu_persediaan.sedikit|floatformat:4 }}{% endif %}</div>
+            <span>Banyak</span><div class="ro">{% if f %}{{ f.mu_persediaan.banyak|floatformat:4 }}{% endif %}</div></div>
+        </div>
+        <div>
+          <div class="kolom-judul">Produksi</div>
+          <div class="sub"><span>Berkurang</span><div class="ro">{% if f %}{{ f.alpha_berkurang|floatformat:4 }}{% endif %}</div>
+            <span>Bertambah</span><div class="ro">{% if f %}{{ f.alpha_bertambah|floatformat:4 }}{% endif %}</div></div>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset class="grp">
+      <legend>Komponen Aturan</legend>
+      <div class="sub">
+        <span>a1</span><div class="ro">{% if f %}{{ f.a1|floatformat:2 }}{% endif %}</div>
+        <span>a2</span><div class="ro">{% if f %}{{ f.a2|floatformat:2 }}{% endif %}</div>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="bawah">
+    <fieldset class="grp">
+      <legend>Aplikasi Fungsi Implikasi</legend>
+      <div class="sub" style="grid-template-columns:80px 1fr">
+        {% if f %}
+          {% for nama, nilai in f.alpha_predikat.items %}
+          <span title="{{ nama }}">&alpha;-predikat{{ forloop.counter }}</span><div class="ro">{{ nilai|floatformat:4 }}</div>
+          {% endfor %}
+        {% else %}
+          {% for i in "1234" %}<span>&alpha;-predikat{{ i }}</span><div class="ro"></div>{% endfor %}
+        {% endif %}
+      </div>
+    </fieldset>
+    <fieldset class="grp">
+      <legend>Defuzzifikasi</legend>
+      <div class="sub" style="grid-template-columns:55px 1fr 55px 1fr">
+        {% if f %}
+          {% for m, a in f.segmen %}
+          <span>Nilai M{{ forloop.counter }}</span><div class="ro">{{ m|floatformat:2 }}</div>
+          <span>Nilai A{{ forloop.counter }}</span><div class="ro">{{ a|floatformat:2 }}</div>
+          {% endfor %}
+        {% else %}
+          {% for i in "123" %}<span>Nilai M{{ i }}</span><div class="ro"></div><span>Nilai A{{ i }}</span><div class="ro"></div>{% endfor %}
+        {% endif %}
+      </div>
+    </fieldset>
+    <fieldset class="grp">
+      <legend>Hasil Prediksi</legend>
+      <div class="hasil-box">
+        {% if f %}{{ f.produksi|floatformat:2 }}<small>kodi (&asymp; {{ f.produksi|floatformat:0 }})</small>{% endif %}
+      </div>
+    </fieldset>
+  </div>
+</form>
+{% endblock %}

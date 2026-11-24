@@ -1,0 +1,52 @@
+{% extends "produksi/base.html" %}
+{% load l10n %}
+{% block wclass %}lebar{% endblock %}
+{% block content %}
+<form method="get" class="laporan-bar">
+  <span>Tahun</span>
+  <select name="tahun">
+    <option value="">Semua</option>
+    {% for t in tahun_list %}
+    <option value="{{ t|unlocalize }}" {% if t|stringformat:"s" == tahun %}selected{% endif %}>{{ t|unlocalize }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Pilih</button>
+  <a class="btn" href="{% url 'beranda' %}">Keluar</a>
+  <button type="button" onclick="window.print()">Print</button>
+</form>
+
+<div class="viewer">
+  <span class="tab">Main Report</span>
+  <div class="area">
+    <div class="kertas">
+      <h2>Laporan Prediksi Produksi Barang</h2>
+      <p>Logika Fuzzy Metode Mamdani{% if tahun %} &middot; Tahun {{ tahun }}{% endif %}</p>
+      {% if daftar %}
+      <table>
+        <thead>
+          <tr>
+            <th>id_produksi</th><th>barang</th><th>bulan</th><th>tahun</th>
+            <th>permintaan</th><th>permintaan_min</th><th>permintaan_max</th>
+            <th>persediaan</th><th>persediaan_min</th><th>persediaan_max</th>
+            <th>hasil_prediksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in daftar %}
+          <tr>
+            <td>{{ p.kode }}</td><td>{{ p.barang.nama }}</td>
+            <td>{{ p.bulan }}</td><td>{{ p.tahun|unlocalize }}</td>
+            <td>{{ p.permintaan }}</td><td>{{ p.permintaan_min }}</td><td>{{ p.permintaan_max }}</td>
+            <td>{{ p.persediaan }}</td><td>{{ p.persediaan_min }}</td><td>{{ p.persediaan_max }}</td>
+            <td>{{ p.hasil|floatformat:2 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>Belum ada hasil prediksi yang disimpan. Hitung dan simpan dari menu Data Produksi.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

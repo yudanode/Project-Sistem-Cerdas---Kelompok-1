@@ -1,0 +1,63 @@
+{% extends "produksi/base.html" %}
+{% block content %}
+<form method="post" autocomplete="off">
+  {% csrf_token %}
+  <input type="hidden" name="aksi" value="ubah_password">
+  <fieldset class="grp">
+    <legend>Ubah Password</legend>
+    <div class="pengguna-grid">
+      <span>Password lama</span>{{ form_password.old_password }}
+      {% if form_password.old_password.errors %}<ul class="errorlist"><li>{{ form_password.old_password.errors.0 }}</li></ul>{% endif %}
+      <span>Password baru</span>{{ form_password.new_password1 }}
+      {% if form_password.new_password1.errors %}<ul class="errorlist"><li>{{ form_password.new_password1.errors.0 }}</li></ul>{% endif %}
+      <span>Ulangi password</span>{{ form_password.new_password2 }}
+      {% if form_password.new_password2.errors %}<ul class="errorlist"><li>{{ form_password.new_password2.errors.0 }}</li></ul>{% endif %}
+    </div>
+    <div class="pengguna-aksi">
+      <button type="submit">Simpan</button>
+      <a class="btn" href="{% url 'beranda' %}" style="margin-left:6px">Keluar</a>
+    </div>
+  </fieldset>
+</form>
+
+{% if adalah_admin %}
+<fieldset class="grp">
+  <legend>Tambah Pengguna</legend>
+  <form method="post" autocomplete="off">
+    {% csrf_token %}
+    <input type="hidden" name="aksi" value="tambah">
+    <div class="pengguna-grid">
+      <span>Username</span><input type="text" name="username">
+      <span>Password</span><input type="password" name="password">
+      <span>Level</span>
+      <select name="level">
+        {% for kode, nama in levels %}<option value="{{ kode }}">{{ nama }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="pengguna-aksi"><button type="submit">Tambah</button></div>
+  </form>
+</fieldset>
+
+<div class="grid-wrap">
+  <table class="grid">
+    <thead><tr><th>username</th><th>level</th><th></th></tr></thead>
+    <tbody>
+      {% for p in pengguna %}
+      <tr style="cursor:default">
+        <td>{{ p.username }}</td>
+        <td>{{ p.profile.get_level_display|default:"-" }}</td>
+        <td class="kanan">
+          {% if p != user %}
+          <form method="post" style="display:inline" onsubmit="return confirm('Hapus pengguna {{ p.username }}?');">
+            {% csrf_token %}<input type="hidden" name="aksi" value="hapus"><input type="hidden" name="pk" value="{{ p.pk }}">
+            <button type="submit" style="height:18px;min-width:50px;font-size:11px">Hapus</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}
